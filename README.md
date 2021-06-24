@@ -17,7 +17,7 @@ _The reason why this image is not posted on [Docker Hub](https://hub.docker.com)
 
 ## Pre-Install
 
-Download [ORDS](http://www.oracle.com/technetwork/developer-tools/rest-data-services/downloads/index.html). I'll assume that this is stored in your `~/Downloads` directory. The downloaded file will look like `~/Downloads/ords.18.1.1.95.1251.zip`
+Download [ORDS](http://www.oracle.com/technetwork/developer-tools/rest-data-services/downloads/index.html). I'll assume that this is stored in your `~/Downloads` directory. The downloaded file will look like `~/Downloads/ords-21.1.3.153.1102.zip`
 
 ```bash
 # Clone this repo
@@ -38,8 +38,8 @@ Note: tagging with ORDS version number allows you to have multiple ORDS images f
 ```bash
 ORDS_VERSION=21.1.3
 docker build \
-  -t oracle-ords:$ORDS_VERSION \
-  -t oracle-ords:latest \
+  -t evriinsight/ords:$ORDS_VERSION \
+  -t evriinsight/ords:latest \
   .
 ```
 
@@ -55,7 +55,7 @@ Running the ORDS container this way will setup the ORDS configuration in the map
 #Note: DB_PORT is NOT the port that you mapped to your Oracle DB Docker image. It's the port that the database natively has open.
 # It's recommended to leave it as 1521
 # Optional: If DB is in another Docker machine include: --network=<docker_network_name> \
-# ~/docker/ords/ords-18.1.1/config is the directory where the ORDS configuration will be saved. If it doesn't exist Docker will create it.
+# ~/docker/ords/21.1.3/config is the directory where the ORDS configuration will be saved. If it doesn't exist Docker will create it.
 # 
 # ORACLE XE Changes:
 #
@@ -96,7 +96,7 @@ In this case ORDS will assume that your configuration exists (found in the mappe
 ```bash
 docker run -it -d \
   --name=ords \
-  --network=oracle_network \
+  --network=[network] \
   -e TZ=America/Edmonton \
   --volume ~/docker/ords/19.4.0/config:/opt/ords \
   --volume ~/docker/files/apex/19.2.0/images:/ords/apex-images \
