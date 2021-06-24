@@ -23,7 +23,7 @@ The following bash `alias` will build and run the docker image/container:
 ```bash
 alias dockertest="
 
-ORDS_VERSION=18.1.1
+ORDS_VERSION=21.1.3
 docker build -t ords:$ORDS_VERSION .
 
 docker run -it --rm \
@@ -32,16 +32,16 @@ docker run -it --rm \
   -e TZ=America/Edmonton \
   -e DB_HOSTNAME=oracle \
   -e DB_PORT=1521 \
-  -e DB_SERVICENAME=orclpdb513.localdomain \
-  -e APEX_PUBLIC_USER_PASS=oracle \
+  -e DB_SERVICENAME=[pdb] \
+  -e APEX_PUBLIC_USER_PASS=[passsword] \
   -e APEX_LISTENER_PASS=oracle \
   -e APEX_REST_PASS=oracle \
   -e ORDS_PASS=oracle \
   -e SYS_PASS=Oradoc_db1 \
-  --volume ~/Docker/ords/ords-18.1.1/config:/opt/ords \
-  --volume ~/docker/apex/5.1.3/images:/ords/apex-images \
-  -p 32513:8080 \
-  ords:18.1.1"
+  --volume ~/Docker/ords/21.1.3/config:/opt/ords \
+  --volume ~/docker/apex/21.1/images:/ords/apex-images \
+  -p 8080:8080 \
+  evriinsight/ords:21.1.3"
 
   dockertest
   ```

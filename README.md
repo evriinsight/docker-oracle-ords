@@ -17,7 +17,6 @@ _The reason why this image is not posted on [Docker Hub](https://hub.docker.com)
 
 ## Pre-Install
 
-
 Download [ORDS](http://www.oracle.com/technetwork/developer-tools/rest-data-services/downloads/index.html). I'll assume that this is stored in your `~/Downloads` directory. The downloaded file will look like `~/Downloads/ords.18.1.1.95.1251.zip`
 
 ```bash
@@ -31,12 +30,13 @@ cp ~/Downloads/ords-*.zip files/
 
 ```
 
+
 ## Build ORDS Docker Image
 
 Note: tagging with ORDS version number allows you to have multiple ORDS images for each ORDS release.
 
 ```bash
-ORDS_VERSION=19.4.0
+ORDS_VERSION=21.1.3
 docker build \
   -t oracle-ords:$ORDS_VERSION \
   -t oracle-ords:latest \
@@ -62,27 +62,27 @@ Running the ORDS container this way will setup the ORDS configuration in the map
 # DB_HOSTNAME=oracle-xe \
 # DB_SERVICENAME=xepdb1 \
 #
-ORDS_CONF_DIR=~/docker/ords/19.4.0
-ORDS_APEX_IMG_DIR=~/docker/files/apex/19.2.0/images
+ORDS_CONF_DIR=~/docker/ords/21.1.3
+ORDS_APEX_IMG_DIR=~/docker/files/apex/21.1/images
 
 docker run -it --rm \
-  --network=oracle_network \
+  --network=[network] \
   -e TZ=America/Edmonton \
-  -e DB_HOSTNAME=oracle-xe \
+  -e DB_HOSTNAME=oracle \
   -e DB_PORT=1521 \
-  -e DB_SERVICENAME=XEPDB1 \
-  -e APEX_PUBLIC_USER_PASS=oracle \
-  -e APEX_LISTENER_PASS=oracle \
-  -e APEX_REST_PASS=oracle \
-  -e ORDS_PASS=oracle \
-  -e SYS_PASS=Oracle18 \
+  -e DB_SERVICENAME=[pdb] \
+  -e APEX_PUBLIC_USER_PASS=[password] \
+  -e APEX_LISTENER_PASS=[password] \
+  -e APEX_REST_PASS=[password] \
+  -e ORDS_PASS=[password] \
+  -e SYS_PASS=[password] \
   --volume $ORDS_CONF_DIR/config:/opt/ords \
   --volume $ORDS_APEX_IMG_DIR:/ords/apex-images \
-  -p 32513:8080 \
-  oracle-ords:latest
+  -p 8080:8080 \
+  evriinsight/ords:21.1.3
 ```
 
-On your laptop go to [localhost:32513/ords](http://localhost:32513/ords). For SQL Developer Web go to: http://localhost:32513/ords/sql-developer
+On your laptop go to [localhost:8080/ords](http://localhost:8080/ords). For SQL Developer Web go to: http://localhost:8080/ords/sql-developer
 
 ### Configuration Exists
 
@@ -100,8 +100,8 @@ docker run -it -d \
   -e TZ=America/Edmonton \
   --volume ~/docker/ords/19.4.0/config:/opt/ords \
   --volume ~/docker/files/apex/19.2.0/images:/ords/apex-images \
-  -p 32513:8080 \
-  oracle-ords:latest
+  -p 8080:8080 \
+  evriinsight/ords:21.1.3
 ```
 
 ### Health Check
@@ -113,8 +113,8 @@ docker ps
 
 # Should result in something like the following
 # Note the (healthy) status
-CONTAINER ID  IMAGE        COMMAND                 CREATED       STATUS                  PORTS                    NAMES
-b7694a2d62ba  ords:18.1.1  "/ords/config-run-or…"  15 hours ago  Up 15 hours (healthy)   0.0.0.0:32513->8080/tcp  ords
+CONTAINER ID  IMAGE                    COMMAND                 CREATED        STATUS                  PORTS                    NAMES
+b7694a2d62ba  evriinsight/ords:21.1.3  "/ords/config-run-or…"  15 hours ago   Up 15 hours (healthy)   0.0.0.0:8080->8080/tcp   ords
 ```
 
 ### Logs
@@ -126,6 +126,7 @@ docker logs ords
 ```
 
 Where `ords` is the name of your container.
+
 
 ## Container Parameters
 Parameter | Description
@@ -145,7 +146,7 @@ Parameter | Description
 `-e FEATURE_SDW` | SQL Developer Web. Default: `true`. *Note: `REST_SQL` must be `true` as well*
 `--volume <local dir>:/ords/apex-images` | Directory that contains images for APEX
 `--volume <local dir>:/opt/ords`  | Optional: Directory to/that contains ORDS config. If this is not provided, the configuration will be saved in the container and will **not** be available if the container is deleted. If `defaults.xml` is not found in the folder ORDS will try to install.
-`-p 1234:8080`  |  Port mapping, `8080` is the port in the container and can not be modified.
+`-p 8080:8080`  |  Port mapping, `8080` is the port in the container and can not be modified.
 
 
 ## Development
